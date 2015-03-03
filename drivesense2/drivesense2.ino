@@ -44,7 +44,6 @@ int state;
 Servo servo;
 
 void setup() {
-  Serial.begin(9600);
   super_state = INIT;
   state = STOP;
   pinMode(A_DIR, OUTPUT);
@@ -61,7 +60,6 @@ void setup() {
 
 void loop() {
   if (super_state == INIT) {
-    Serial.println("FINDING WALL");
     state = FORWARD;
     int lb = digitalRead(LB);
     int rb = digitalRead(RB);
@@ -75,8 +73,6 @@ void loop() {
       lb = digitalRead(LB);
       rb = digitalRead(RB);
     }
-    Serial.println("WALL FOUND");
-    Serial.println("REVERSING TO TAPE");
     moveBackward();
     delay(125);
     reverseHalt();
@@ -90,7 +86,6 @@ void loop() {
       fl = digitalRead(FLS);
       fr = digitalRead(FRS);
     }
-    Serial.println("TAPE FOUND - REORIENTING");
     reverseHalt();
     delay(500);
     moveForward();
@@ -102,11 +97,9 @@ void loop() {
       fr = digitalRead(FRS);
     }
     halt();
-    Serial.println("REORIENTING COMPLETE");
     super_state = DOWN;
   }
   else if (super_state == RELOAD) {
-    Serial.println("RELOADING");
     for (int i = 0; i < 1; i++) {
       int lb = digitalRead(LB);
       int rb = digitalRead(RB);
@@ -124,16 +117,13 @@ void loop() {
       }
       delay(3000);
     }
-    Serial.println("TURNING AROUND");
     turnAround();
     super_state = UP;
   }
   else if (super_state == UP) {
-    Serial.println("FORWARD PASS");
     move();
   }
   else if (super_state == SHOOT) {
-    Serial.println("SHOOTING");
     delay(1000);
     servo.write(90);
     delay(3000);
@@ -146,7 +136,6 @@ void loop() {
     super_state = DOWN; 
   }
   else if (super_state == DOWN) {
-    Serial.println("BACKWARD PASS");
     move();
   }
 }
@@ -166,16 +155,10 @@ void move() {
       }
   }
   else if (fl == LOW && fr == LOW) {
-    if (state != FORWARD) {
-      Serial.println("FORWARD");
-    }
     state = FORWARD;
     moveForward();
   }
   else if (fl == LOW && fr == HIGH) {
-    if (state != RIGHT) {
-      Serial.println("RIGHT");
-    }
     halt();
     state = RIGHT;
     turnRight();
@@ -184,9 +167,6 @@ void move() {
     delay(225);
   }
   else if (fl == HIGH && fr == LOW) {
-    if (state != LEFT) {
-      Serial.println("LEFT");
-    }
     halt();
     state = LEFT;
     turnLeft();
@@ -195,9 +175,6 @@ void move() {
     delay(225);
   }
   else if (fl == HIGH && fr == HIGH) {
-    if (state != FORWARD) {
-     Serial.println("FORWARD");
-    }
     state = FORWARD;
     moveForward();
   }
