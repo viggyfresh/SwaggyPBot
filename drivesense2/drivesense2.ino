@@ -34,6 +34,7 @@ void turnAround();
 void turnLeft();
 void turnRight();
 void moveForward();
+void moveFast();
 void moveBackward();
 void halt();
 void reverseHalt();
@@ -65,7 +66,7 @@ void loop() {
     int lb = digitalRead(LB);
     int rb = digitalRead(RB);
     while (true) {
-      moveForward();
+      moveFast();
       if (lb == LOW || rb == LOW) {
         halt();
         state = STOP;
@@ -76,6 +77,12 @@ void loop() {
     }
     Serial.println("WALL FOUND");
     Serial.println("REVERSING TO TAPE");
+    moveBackward();
+    delay(125);
+    reverseHalt();
+    turnLeft();
+    delay(125);
+    halt();
     int fl = digitalRead(FLS);
     int fr = digitalRead(FRS);
     while (fl == LOW) {
@@ -100,11 +107,11 @@ void loop() {
   }
   else if (super_state == RELOAD) {
     Serial.println("RELOADING");
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 1; i++) {
       int lb = digitalRead(LB);
       int rb = digitalRead(RB);
       moveBackward();
-      delay(350);
+      delay(400);
       reverseHalt();
       while (true) {
         moveForward();
@@ -115,7 +122,7 @@ void loop() {
         lb = digitalRead(LB);
         rb = digitalRead(RB);
       }
-      delay(5000);
+      delay(3000);
     }
     Serial.println("TURNING AROUND");
     turnAround();
@@ -129,7 +136,7 @@ void loop() {
     Serial.println("SHOOTING");
     delay(1000);
     servo.write(90);
-    delay(5000);
+    delay(3000);
     for (int i = 90; i >= 8; i -= 10) {
       servo.write(i);
       delay(50);
@@ -154,7 +161,7 @@ void move() {
       state = STOP;
       if (super_state == UP) super_state = SHOOT;
       else if (super_state == DOWN) {
-        delay(5000);
+        delay(3000);
         super_state = RELOAD;
       }
   }
@@ -232,6 +239,13 @@ void moveForward() {
   digitalWrite(B_DIR, HIGH);
   analogWrite(A_ENABLE, A_DUTY);
   analogWrite(B_ENABLE, B_DUTY);
+}
+
+void moveFast() {
+  digitalWrite(A_DIR, HIGH);
+  digitalWrite(B_DIR, HIGH);
+  analogWrite(A_ENABLE, 100);
+  analogWrite(B_ENABLE, 100);
 }
 
 void moveBackward() {
