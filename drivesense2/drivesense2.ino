@@ -100,7 +100,7 @@ void loop() {
     super_state = DOWN;
   }
   else if (super_state == RELOAD) {
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 2; i++) {
       int lb = digitalRead(LB);
       int rb = digitalRead(RB);
       moveBackward();
